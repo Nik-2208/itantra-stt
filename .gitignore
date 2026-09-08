@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 __pycache__/
 *.pyc
 *.pyo
@@ -30,3 +31,22 @@ outputs/
 reports/*.json
 reports/*.md
 node_modules/
+=======
+*.iml
+.gradle
+.gradle_home
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+docs/
+>>>>>>> origin/main
