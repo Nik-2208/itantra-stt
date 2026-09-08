@@ -1,0 +1,58 @@
+[
+  {
+    "id": "eval_01_emergency_hi_en",
+    "source_language": "hi",
+    "target_language": "en",
+    "source": "यहाँ आपातकालीन स्थिति है, तुरंत मदद भेजें।",
+    "reference": "This is an emergency situation, send help immediately."
+  },
+  {
+    "id": "eval_02_medical_hi_en",
+    "source_language": "hi",
+    "target_language": "en",
+    "source": "मरीज को तुरंत अस्पताल ले जाना है।",
+    "reference": "The patient needs to be taken to the hospital immediately."
+  },
+  {
+    "id": "eval_03_fire_hi_en",
+    "source_language": "hi",
+    "target_language": "en",
+    "source": "इमारत में आग लगी है, फायर ब्रिगेड को बुलाएं।",
+    "reference": "There is a fire in the building, call the fire brigade."
+  },
+  {
+    "id": "eval_04_short_hi_en",
+    "source_language": "hi",
+    "target_language": "en",
+    "source": "मदद कीजिए।",
+    "reference": "Please help."
+  },
+  {
+    "id": "eval_05_rescue_gu_en",
+    "source_language": "gu",
+    "target_language": "en",
+    "source": "અહીં પાણી ભરાઈ ગયું છે અને લોકો ફસાયેલા છે.",
+    "reference": "Water is flooded here and people are trapped."
+  },
+  {
+    "id": "eval_06_medical_mr_en",
+    "source_language": "mr",
+    "target_language": "en",
+    "source": "रुग्णालयात तातडीने डॉक्टर हवे आहेत.",
+    "reference": "Doctors are urgently needed in the hospital."
+  },
+  {
+    "id": "eval_07_emergency_ta_en",
+    "source_language": "ta",
+    "target_language": "en",
+    "source": "தயவுசெய்து உடனடியாக ஆம்புலன்ஸை அனுப்புங்கள்.",
+    "reference": "Please send an ambulance immediately."
+  },
+  {
+    "id": "eval_08_fire_te_en",
+    "source_language": "te",
+    "target_language": "en",
+    "source": "భవనంలో మంటలు చెలరేగాయి, సహాయం చేయండి.",
+    "reference": "A fire has broken out in the building, please help."
+  }
+]

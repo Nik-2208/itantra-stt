@@ -1,0 +1,58 @@
+[
+  {
+    "id": "short_hi_en_01",
+    "category": "short",
+    "source_language": "hi",
+    "target_language": "en",
+    "text": "मदद कीजिए।"
+  },
+  {
+    "id": "short_en_hi_02",
+    "category": "short",
+    "source_language": "en",
+    "target_language": "hi",
+    "text": "Please help."
+  },
+  {
+    "id": "short_gu_en_03",
+    "category": "short",
+    "source_language": "gu",
+    "target_language": "en",
+    "text": "મને મદદ કરો."
+  },
+  {
+    "id": "medium_hi_en_01",
+    "category": "medium",
+    "source_language": "hi",
+    "target_language": "en",
+    "text": "कृपया मेरी मदद कीजिए और मुझे तुरंत सुरक्षित स्थान तक ले जाइए।"
+  },
+  {
+    "id": "medium_mr_en_02",
+    "category": "medium",
+    "source_language": "mr",
+    "target_language": "en",
+    "text": "कृपया येथे त्वरित वैद्यकीय मदत पाठवा, परिस्थिती गंभीर आहे."
+  },
+  {
+    "id": "medium_ta_en_03",
+    "category": "medium",
+    "source_language": "ta",
+    "target_language": "en",
+    "text": "தயவுசெய்து எனக்கு உதவி செய்யுங்கள், அவசர நிலைமை உள்ளது."
+  },
+  {
+    "id": "long_hi_en_01",
+    "category": "long",
+    "source_language": "hi",
+    "target_language": "en",
+    "text": "यहाँ भारी बारिश और बाढ़ के कारण सभी रास्ते बंद हो गए हैं। कई लोग सुरक्षित आश्रय की तलाश में हैं। कृपया राहत सामग्री और चिकित्सा दल को तुरंत इस स्थान पर भेजने की व्यवस्था करें।"
+  },
+  {
+    "id": "long_bn_en_02",
+    "category": "long",
+    "source_language": "bn",
+    "target_language": "en",
+    "text": "এখানে জরুরি অবস্থা তৈরি হয়েছে। বিদ্যুৎ সংযোগ বিচ্ছিন্ন এবং মোবাইল নেটওয়ার্ক খুব দুর্বল। অবিলম্বে উদ্ধারকারী দল এবং অ্যাম্বুলেন্স পাঠানো প্রয়োজন।"
+  }
+]
