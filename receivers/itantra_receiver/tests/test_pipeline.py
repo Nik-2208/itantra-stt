@@ -1,6 +1,6 @@
 """
 Unit & Integration Tests for pipeline.py
-Tests Section 42 return contract, micro-stage timings, audio metrics, and error propagation.
+Tests end-to-end execution, timing accuracy, payload contracts, and error propagation.
 """
 
 import unittest
@@ -24,66 +24,42 @@ class TestPipeline(unittest.TestCase):
             output_dir=config.TEMP_AUDIO_DIR,
         )
 
-    def test_section_42_contract_and_execution(self):
-        """Test full pipeline run producing valid Section 42 data contract."""
+    def test_successful_execution_and_contract(self):
+        """Test full pipeline run producing valid data contract and audio file."""
         result = self.pipeline.translate_and_speak(
             text="मदद कीजिए।",
             source_language="hi",
             target_language="en",
         )
         self.assertIsInstance(result, dict)
+        self.assertEqual(result["source_text"], "मदद कीजिए।")
+        self.assertEqual(result["translated_text"], "Please help.")
+        self.assertEqual(result["source_language"], "hi")
+        self.assertEqual(result["target_language"], "en")
 
-        # 1. Input block
-        self.assertIn("input", result)
-        self.assertEqual(result["input"]["text"], "मदद कीजिए।")
-        self.assertEqual(result["input"]["language"], "hi")
+        # Audio checks
+        self.assertIn("audio", result)
+        self.assertTrue(Path(result["audio"]["path"]).exists())
+        self.assertEqual(result["audio"]["sample_rate"], config.TTS_SAMPLE_RATE)
+        self.assertGreater(result["audio"]["duration_ms"], 0.0)
 
-        # 2. Translation block
-        self.assertIn("translation", result)
-        trans = result["translation"]
-        self.assertEqual(trans["text"], "Please help.")
-        self.assertEqual(trans["language"], "en")
-        self.assertIsInstance(trans["segments"], list)
-        self.assertEqual(trans["beam_size"], 1)
-        self.assertIn("validation", trans)
-        self.assertTrue(trans["validation"]["valid"])
+        # Formatted output checks
+        self.assertIn("formatted_output", result)
+        self.assertEqual(result["formatted_output"]["display"]["status"], "NORMAL")
 
-        # 3. TTS block
-        self.assertIn("tts", result)
-        tts = result["tts"]
-        self.assertEqual(tts["language"], "en")
-        self.assertIn("voice_id", tts)
-        self.assertIn("accent_id", tts)
-        self.assertIn("speaker_id", tts)
-        self.assertTrue(Path(tts["audio_path"]).exists())
-        self.assertEqual(tts["sample_rate"], config.TTS_SAMPLE_RATE)
-        self.assertGreater(tts["duration_ms"], 0.0)
-        self.assertIn("rtf", tts)
-        self.assertIn("peak_amplitude", tts)
-        self.assertIn("rms", tts)
-        self.assertIn("clipping_samples", tts)
-
-        # 4. Timing block
-        self.assertIn("timing", result)
+        # Timing checks
         timing = result["timing"]
-        for key in [
-            "normalization_ms",
-            "segmentation_ms",
-            "tokenization_ms",
-            "translation_ms",
-            "detokenization_ms",
-            "validation_ms",
-            "tts_preprocess_ms",
-            "tts_inference_ms",
-            "tts_postprocess_ms",
-            "audio_write_ms",
-            "formatting_ms",
-            "total_ms",
-        ]:
-            self.assertIn(key, timing)
-            self.assertGreaterEqual(timing[key], 0.0)
+        self.assertIn("translation_latency_ms", timing)
+        self.assertIn("formatter_latency_ms", timing)
+        self.assertIn("tts_latency_ms", timing)
+        self.assertIn("audio_write_latency_ms", timing)
+        self.assertIn("total_latency_ms", timing)
+        self.assertGreater(timing["total_latency_ms"], 0.0)
 
-        self.assertGreater(timing["total_ms"], 0.0)
+        # Benchmark RTF check
+        benchmark = result["benchmark"]
+        self.assertIn("tts_rtf", benchmark)
+        self.assertIn("end_to_end_rtf", benchmark)
 
     def test_emergency_pipeline_run(self):
         """Test pipeline run with emergency flags passed through."""

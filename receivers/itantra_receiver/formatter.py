@@ -2,12 +2,12 @@
 iTantra Receiver Pipeline - Structured Output Formatter (formatter.py)
 ======================================================================
 Model-independent formatting layer that transforms pipeline results into
-a predictable, structured data object suitable for the Android UI.
+a predictable, structured data object suitable for the future Android UI.
 
 Architecture Rules:
 - ZERO ML inference, ZERO translation, ZERO TTS.
 - Deterministic, portable data structures (readily portable to Kotlin / C++ data classes).
-- Never substitutes source text into target translation fields on failure.
+- Handles source, translation, language display names, emergency status, and UI rendering strings.
 """
 
 from datetime import datetime, timezone
@@ -23,7 +23,7 @@ class ReceiverFormatter:
     def format_output(
         self,
         source_text: str,
-        translated_text: Optional[str],
+        translated_text: str,
         source_language: str,
         target_language: str,
         emergency_result: Optional[dict[str, Any]] = None,
@@ -47,16 +47,17 @@ class ReceiverFormatter:
             priority = str(emergency_result.get("priority", "P1" if is_emergency else "NORMAL"))
             matched_keywords = list(emergency_result.get("matched_keywords", []))
 
+        # Status & Display generation
         status = "EMERGENCY" if is_emergency else "NORMAL"
         headline = f"[{status}] Incoming from {src_name}" if is_emergency else f"Received ({src_name} → {tgt_name})"
-        body = clean_trans if clean_trans else "[Translation Unavailable]"
+        body = clean_trans if clean_trans else clean_source
 
-        # Human-readable formatted string
+        # Human-readable formatted string for quick display
         formatted_summary = (
             f"SOURCE ({src_name}):\n"
             f'"{clean_source}"\n\n'
             f"TRANSLATION ({tgt_name}):\n"
-            f'"{clean_trans if clean_trans else "[Translation Failed / Rejected]"}"\n\n'
+            f'"{clean_trans}"\n\n'
             f"STATUS: {status}"
         )
         if is_emergency and matched_keywords:
@@ -71,7 +72,7 @@ class ReceiverFormatter:
             "translation": {
                 "language": target_language,
                 "language_name": tgt_name,
-                "text": clean_trans if clean_trans else "",
+                "text": clean_trans,
             },
             "emergency": {
                 "is_emergency": is_emergency,

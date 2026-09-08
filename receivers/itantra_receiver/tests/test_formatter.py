@@ -63,7 +63,7 @@ class TestFormatter(unittest.TestCase):
         )
         self.assertEqual(output["source"]["text"], "नमस्ते")
         self.assertEqual(output["translation"]["text"], "")
-        self.assertEqual(output["display"]["body"], "[Translation Unavailable]")
+        self.assertEqual(output["display"]["body"], "नमस्ते")
 
 
 if __name__ == "__main__":

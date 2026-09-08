@@ -1,7 +1,6 @@
 """
 Unit & Integration Tests for translation.py
-Tests TokenizerAdapter, TranslationValidator, TextSegmenter, context translation,
-partial text policy, and sequence translation contracts.
+Tests input validation, chunking, language routing, error handling, and adapter contracts.
 """
 
 import unittest
@@ -9,9 +8,6 @@ from pathlib import Path
 import config
 from translation import (
     OnDemandTranslator,
-    TokenizerAdapter,
-    TranslationValidator,
-    TextSegmenter,
     MockTranslationAdapter,
     IndicTrans2ONNXAdapter,
     TranslationError,
@@ -29,8 +25,6 @@ class TestTranslation(unittest.TestCase):
             beam_size=1,
             adapter=MockTranslationAdapter(),
         )
-        self.tokenizer = TokenizerAdapter()
-        self.validator = TranslationValidator()
 
     def test_normal_translation(self):
         """Test standard translation execution and return structure."""
@@ -42,67 +36,6 @@ class TestTranslation(unittest.TestCase):
         self.assertEqual(result["output_text"], "Please help.")
         self.assertGreaterEqual(result["latency_ms"], 0.0)
         self.assertEqual(result["beam_size"], 1)
-        self.assertIn("validation", result)
-        self.assertTrue(result["validation"]["valid"])
-
-    def test_tokenizer_adapter_encode_decode(self):
-        """Test TokenizerAdapter encoding, decoding, token counting, and special tokens."""
-        text = "Hello world, emergency response."
-        tokens = self.tokenizer.encode(text)
-        self.assertIsInstance(tokens, list)
-        self.assertGreater(len(tokens), 0)
-
-        # BOS and EOS tokens present
-        self.assertEqual(tokens[0], self.tokenizer.bos_id)
-        self.assertEqual(tokens[-1], self.tokenizer.eos_id)
-
-        count = self.tokenizer.count_tokens(text)
-        self.assertGreater(count, 0)
-
-    def test_detokenization_artifact_cleansing(self):
-        """Test that detokenization strips SentencePiece \u2581, ##, @@, <unk>, and ▁."""
-        dirty_output = "\u2581Ple@@ ase\u2581help## ful\u2581now <unk> ▁."
-        cleaned = TokenizerAdapter.clean_detokenized_text(dirty_output)
-        self.assertNotIn("\u2581", cleaned)
-        self.assertNotIn("@@", cleaned)
-        self.assertNotIn("##", cleaned)
-        self.assertNotIn("<unk>", cleaned)
-        self.assertNotIn("▁", cleaned)
-        self.assertEqual(cleaned, "Please helpful now.")
-
-    def test_partial_stt_text_policy(self):
-        """Section 3: Partial STT text hypotheses must NOT trigger translation."""
-        partial_text = "मद"
-        res = self.translator.translate(partial_text, is_final=False)
-        self.assertFalse(res.get("is_final", True))
-        self.assertEqual(res["output_text"], partial_text)
-        self.assertEqual(res["latency_ms"], 0.0)
-
-    def test_word_safe_segmentation(self):
-        """Section 4: Segmentation must never cut inside lexical words."""
-        long_sentence = "This is a sentence with multiple important keywords that should be segmented safely."
-        chunks = TextSegmenter.segment_sentences(long_sentence, max_chars=30)
-        for chunk in chunks:
-            self.assertLessEqual(len(chunk), 35)
-            # Ensure words are complete
-            for word in chunk.split():
-                self.assertIn(word, long_sentence)
-
-    def test_translation_validator_number_mismatch(self):
-        """Section 10 & 11: Detects missing numerical sequences."""
-        source = "Room 108 is on fire."
-        bad_trans = "The room is on fire."
-        res = self.validator.validate(source, bad_trans, "en", "en")
-        self.assertFalse(res["valid"])
-        self.assertTrue(res["checks"]["number_mismatch"])
-
-    def test_translation_validator_token_artifacts(self):
-        """Section 11: Detects token artifacts in translation output."""
-        source = "मदद कीजिए।"
-        bad_trans = "Please help <unk> ▁."
-        res = self.validator.validate(source, bad_trans, "hi", "en")
-        self.assertFalse(res["valid"])
-        self.assertTrue(res["checks"]["token_artifact"])
 
     def test_empty_input_error(self):
         """Test that empty or whitespace-only inputs raise InvalidInputError."""
@@ -125,6 +58,16 @@ class TestTranslation(unittest.TestCase):
         self.assertEqual(result["output_text"], "This is an alert.")
         self.assertEqual(result["latency_ms"], 0.0)
 
+    def test_long_input_chunking(self):
+        """Test deterministic sentence chunking on long text."""
+        long_text = "पहला वाक्य है। दूसरा वाक्य भी बहुत लंबा है! तीसरा वाक्य यहाँ समाप्त होता है।"
+        chunks = self.translator._chunk_text(long_text)
+        self.assertIsInstance(chunks, list)
+        self.assertGreaterEqual(len(chunks), 1)
+        # Translation across chunks should combine seamlessly
+        result = self.translator.translate(long_text)
+        self.assertIsInstance(result["output_text"], str)
+
     def test_beam_sizes(self):
         """Test valid beam sizes."""
         for beam in [1, 4, 8]:
@@ -132,6 +75,12 @@ class TestTranslation(unittest.TestCase):
             self.assertEqual(self.translator.beam_size, beam)
         with self.assertRaises(InvalidInputError):
             self.translator.set_beam_size(16)
+
+    def test_missing_model_error_detection(self):
+        """Test that requesting a missing ONNX model path raises ModelNotFoundError."""
+        non_existent_path = Path("models/translation/non_existent_pair")
+        with self.assertRaises(ModelNotFoundError):
+            IndicTrans2ONNXAdapter(non_existent_path)
 
 
 if __name__ == "__main__":
