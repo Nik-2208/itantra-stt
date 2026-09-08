@@ -20,4 +20,11 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "iTantra"
-include(":app")
+include(
+    ":app",
+    ":core",
+    ":audio",
+    ":stt",
+    ":langgen",
+    ":transport"
+)
