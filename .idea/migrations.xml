@@ -3,7 +3,7 @@
   <component name="ProjectMigrations">
     <option name="MigrateToGradleLocalJavaHome">
       <set>
-        <option value="$USER_HOME$/Projects/ASTRA/iTantra" />
+        <option value="$PROJECT_DIR$" />
       </set>
     </option>
   </component>
