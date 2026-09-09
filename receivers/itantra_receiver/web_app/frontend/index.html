@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iTantra Receiver Pipeline — Performance & Prototyping Lab</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="logo-badge">iTantra</div>
+        <div>
+          <h1>Receiver-Side Pipeline &amp; Performance Lab</h1>
+          <p class="subtitle">Offline Indian-Language Communication • Streaming Indic-Mio &amp; IndicTrans2</p>
+        </div>
+      </div>
+      <div class="header-badges">
+        <span class="badge badge-offline">● OFFLINE MODE: ACTIVE</span>
+        <span class="badge badge-cpu">CPU-ONLY • BF16/FP32</span>
+        <span id="wsStatusBadge" class="badge badge-status">CONNECTING...</span>
+      </div>
+    </header>
+
+    <!-- Main Grid Layout -->
+    <main class="main-layout">
+      <!-- Left Column: Input & Controls -->
+      <section class="panel control-panel">
+        <div class="panel-header">
+          <h2>Input &amp; Configuration</h2>
+          <span class="panel-tag">Source Node</span>
+        </div>
+
+        <!-- Language Selectors -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="srcLangSelect">Source Language</label>
+            <select id="srcLangSelect">
+              <option value="HI" selected>Hindi (हिन्दी)</option>
+              <option value="GU">Gujarati (ગુજરાતી)</option>
+              <option value="MR">Marathi (मराठी)</option>
+              <option value="KN">Kannada (ಕನ್ನಡ)</option>
+              <option value="ML">Malayalam (മലയാളം)</option>
+              <option value="TA">Tamil (தமிழ்)</option>
+              <option value="TE">Telugu (తెలుగు)</option>
+              <option value="OR">Odia (ଓଡ଼ିଆ)</option>
+              <option value="BN">Bengali (বাংলা)</option>
+              <option value="EN">English</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="tgtLangSelect">Receiver Language</label>
+            <select id="tgtLangSelect">
+              <option value="HI" selected>Hindi (हिन्दी)</option>
+              <option value="GU">Gujarati (ગુજરાતી)</option>
+              <option value="MR">Marathi (मराठी)</option>
+              <option value="KN">Kannada (ಕನ್ನಡ)</option>
+              <option value="ML">Malayalam (മലയാളം)</option>
+              <option value="TA">Tamil (தமிழ்)</option>
+              <option value="TE">Telugu (తెలుగు)</option>
+              <option value="OR">Odia (ଓଡ଼ିଆ)</option>
+              <option value="BN">Bengali (বাংলা)</option>
+              <option value="EN">English</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Voice & Style Profile -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="voiceProfileSelect">Voice / Accent Profile</label>
+            <select id="voiceProfileSelect">
+              <option value="default">Default Neutral (Standard)</option>
+              <option value="regional_north">Regional Northern Accent</option>
+              <option value="regional_west">Regional Western Accent</option>
+              <option value="regional_south">Regional Southern Accent</option>
+              <option value="custom_ref">Custom Speaker Conditioning (Reference Audio)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="styleModeSelect">Operating Mode</label>
+            <select id="styleModeSelect">
+              <option value="NORMAL" selected>Normal Message</option>
+              <option value="ALERT">Alert (Priority)</option>
+              <option value="SOS">SOS (Highest Preemption)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Pipeline Execution Mode -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pipelineModeSelect">Synthesis Architecture</label>
+            <select id="pipelineModeSelect">
+              <option value="OPTIMIZED" selected>OPTIMIZED (Streaming Tokens → Micro-batched MioCodec)</option>
+              <option value="BASELINE">BASELINE (Full Sentence → Full WAV Buffer)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="chunkSizeSelect">TTS Token Chunk Size</label>
+            <select id="chunkSizeSelect">
+              <option value="16">16 tokens (Aggressive Low-Latency)</option>
+              <option value="24">24 tokens</option>
+              <option value="32" selected>32 tokens (Recommended Balanced)</option>
+              <option value="48">48 tokens</option>
+              <option value="64">64 tokens (High Cohesion)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Preset Test Cases -->
+        <div class="form-group">
+          <label>Quick Test Scenarios (Cases 1-5)</label>
+          <div class="scenario-buttons">
+            <button class="btn-scenario" data-src="HI" data-tgt="HI" data-text="मुझे आपकी आवाज़ सुनाई दे रही है।">Case 1: HI → HI (No MT)</button>
+            <button class="btn-scenario" data-src="GU" data-tgt="HI" data-text="મને મદદ જોઈએ">Case 2: GU → HI (Help)</button>
+            <button class="btn-scenario" data-src="MR" data-tgt="EN" data-text="मला मदत हवी आहे">Case 3: MR → EN</button>
+            <button class="btn-scenario" data-src="HI" data-tgt="HI" data-text="आग लग गई है, तुरंत मदद भेजिए">Case 4: Emergency Fire Alert</button>
+            <button class="btn-scenario" data-src="HI" data-tgt="HI" data-mode="SOS" data-text="SOS! बाढ़ में 4 लोग फंसे हैं, तुरंत नाव भेजिए">Case 5: SOS Preemption</button>
+          </div>
+        </div>
+
+        <!-- Text Input Box -->
+        <div class="form-group">
+          <label for="textInput">Received Text Input</label>
+          <textarea id="textInput" rows="4" placeholder="Enter source text message here..."></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="button-bar">
+          <button id="btnSubmit" class="btn btn-primary">⚡ Submit &amp; Stream</button>
+          <button id="btnStop" class="btn btn-secondary">⏹ Stop</button>
+          <button id="btnClear" class="btn btn-ghost">Clear</button>
+        </div>
+      </section>
+
+      <!-- Center Column: Immediate Display & Live Receiver Monitoring -->
+      <section class="panel monitor-panel">
+        <div class="panel-header">
+          <h2>Receiver Real-Time Monitor</h2>
+          <span id="activeModeBadge" class="panel-tag tag-optimized">OPTIMIZED MODE</span>
+        </div>
+
+        <!-- Emergency Banner (Hidden by default, shown on Alert/SOS) -->
+        <div id="emergencyBanner" class="emergency-banner hidden">
+          <div class="emergency-icon">🚨</div>
+          <div class="emergency-content">
+            <h3 id="emergencyTitle">EMERGENCY DETECTED</h3>
+            <p id="emergencyDetails">Matched terms: None</p>
+          </div>
+          <span id="emergencyPriorityBadge" class="priority-badge">ALERT</span>
+        </div>
+
+        <!-- Text Display Cards (Displayed immediately) -->
+        <div class="display-card">
+          <div class="card-header">
+            <span class="card-title">ORIGINAL RECEIVED TEXT</span>
+            <span id="originalDisplayTime" class="card-metric">0.00 ms</span>
+          </div>
+          <div id="originalTextDisplay" class="card-body placeholder-text">
+            Awaiting incoming message...
+          </div>
+        </div>
+
+        <div class="display-card">
+          <div class="card-header">
+            <span class="card-title">TRANSLATED TEXT (IndicTrans2)</span>
+            <span id="translatedDisplayTime" class="card-metric">Bypassed (0.00 ms)</span>
+          </div>
+          <div id="translatedTextDisplay" class="card-body placeholder-text">
+            Translation output will appear here...
+          </div>
+        </div>
+
+        <!-- Live Audio & Streaming Progress -->
+        <div class="display-card">
+          <div class="card-header">
+            <span class="card-title">SPEECH SYNTHESIS &amp; PLAYBACK</span>
+            <span id="playbackStatusBadge" class="status-pill pill-idle">IDLE</span>
+          </div>
+          <div class="audio-progress-bar">
+            <div id="audioProgressFill" class="progress-fill"></div>
+          </div>
+          <div class="audio-stats">
+            <span>Speech Tokens: <strong id="speechTokensCount">0</strong></span>
+            <span>Audio Chunks: <strong id="audioChunksCount">0</strong></span>
+            <span>Duration: <strong id="audioDuration">0.0s</strong></span>
+          </div>
+        </div>
+
+        <!-- Event Timeline Visualization -->
+        <div class="display-card timeline-card">
+          <div class="card-header">
+            <span class="card-title">EVENT TIMELINE (NANOSECOND INSTRUMENTATION)</span>
+          </div>
+          <div id="eventTimeline" class="timeline-container">
+            <div class="timeline-empty">Submit text to view live stage milestones...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Benchmark Laboratory & Comparison -->
+      <section class="panel benchmark-panel">
+        <div class="panel-header">
+          <h2>Benchmark Laboratory</h2>
+          <div class="export-actions">
+            <button id="btnExportJson" class="btn-sm">Export JSON</button>
+            <button id="btnExportCsv" class="btn-sm">Export CSV</button>
+          </div>
+        </div>
+
+        <!-- Key Metrics Cards -->
+        <div class="metrics-grid">
+          <div class="metric-card highlight-metric">
+            <span class="metric-label">TIME TO FIRST AUDIO (TTFA)</span>
+            <span id="metricTTFA" class="metric-value">— ms</span>
+            <span class="metric-sub">Critical Latency Milestone</span>
+          </div>
+
+          <div class="metric-card">
+            <span class="metric-label">END-TO-END LATENCY</span>
+            <span id="metricE2E" class="metric-value">— ms</span>
+            <span class="metric-sub">Submit → Playback</span>
+          </div>
+
+          <div class="metric-card">
+            <span class="metric-label">REAL-TIME FACTOR (RTF)</span>
+            <span id="metricRTF" class="metric-value">—</span>
+            <span class="metric-sub">&lt; 1.0 is faster than real-time</span>
+          </div>
+
+          <div class="metric-card">
+            <span class="metric-label">TTS TOTAL DURATION</span>
+            <span id="metricTtsTotal" class="metric-value">— ms</span>
+            <span class="metric-sub">Complete Token Decode</span>
+          </div>
+        </div>
+
+        <!-- Side-by-Side Comparison: Baseline vs Optimized -->
+        <div class="comparison-container">
+          <h3>Architecture Comparison</h3>
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Baseline (WAV)</th>
+                <th>Optimized (Stream)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>TTFA</td>
+                <td id="compBaseTTFA">— ms</td>
+                <td id="compOptTTFA" class="text-green">— ms</td>
+              </tr>
+              <tr>
+                <td>E2E Latency</td>
+                <td id="compBaseE2E">— ms</td>
+                <td id="compOptE2E" class="text-green">— ms</td>
+              </tr>
+              <tr>
+                <td>RTF</td>
+                <td id="compBaseRTF">—</td>
+                <td id="compOptRTF">—</td>
+              </tr>
+              <tr>
+                <td>RAM Usage</td>
+                <td id="compBaseRAM">— MB</td>
+                <td id="compOptRAM">— MB</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Resource Monitoring -->
+        <div class="resource-container">
+          <h3>Local System Resources</h3>
+          <div class="resource-row">
+            <span>Peak RAM:</span>
+            <strong id="metricPeakRAM">— MB</strong>
+          </div>
+          <div class="resource-row">
+            <span>Current Process RAM:</span>
+            <strong id="metricCurrentRAM">— MB</strong>
+          </div>
+          <div class="resource-row">
+            <span>CPU Load:</span>
+            <strong id="metricCPU">— %</strong>
+          </div>
+          <div class="resource-row">
+            <span>Codec Failures / Underruns:</span>
+            <strong><span id="metricFailures">0</span> / <span id="metricUnderruns">0</span></strong>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="audio/audio-player.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

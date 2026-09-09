@@ -1,0 +1,19 @@
+{
+  "SOS": ["sos", "help", "emergency", "save me", "danger", "critical"],
+  "HELP": ["help", "assist", "assistance", "need help", "send help"],
+  "FIRE": ["fire", "smoke", "burning", "blaze", "explosion"],
+  "TRAPPED": ["trapped", "stuck", "under rubble", "buried", "locked"],
+  "MEDICAL": ["medical", "doctor", "hospital", "medicine", "sick", "cardiac"],
+  "INJURY": ["injury", "injured", "hurt", "fracture", "wound"],
+  "ACCIDENT": ["accident", "crash", "collision", "fallen"],
+  "AMBULANCE": ["ambulance", "paramedic", "emt"],
+  "DANGER": ["danger", "hazard", "threat", "risk"],
+  "EVACUATE": ["evacuate", "escape", "run", "safe zone"],
+  "EARTHQUAKE": ["earthquake", "tremor", "quake", "aftershock"],
+  "FLOOD": ["flood", "drowning", "high water", "submerged"],
+  "RESCUE": ["rescue", "relief team", "search and rescue"],
+  "BLEEDING": ["bleeding", "blood", "hemorrhage"],
+  "UNCONSCIOUS": ["unconscious", "fainted", "unresponsive", "passed out"],
+  "LOCATION": ["location", "address", "here", "spot"],
+  "COORDINATES": ["coordinates", "gps", "latitude", "longitude"]
+}

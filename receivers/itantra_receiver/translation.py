@@ -253,7 +253,15 @@ class OfflineIndicTranslationEngine:
         ("en", "hi", "We are safe."): "हम सुरक्षित हैं।",
         ("en", "hi", "Thank you."): "धन्यवाद।",
 
+        # Gujarati -> Hindi
+        ("gu", "hi", "મને મદદ જોઈએ"): "मुझे मदद चाहिए।",
+        ("gu", "hi", "મને મદદ જોઈએ."): "मुझे मदद चाहिए।",
+        ("gu", "hi", "મને મદદ કરો"): "मेरी मदद कीजिए।",
+        ("gu", "hi", "મને મદદ કરો."): "मेरी मदद कीजिए।",
+
         # Gujarati -> English
+        ("gu", "en", "મને મદદ જોઈએ"): "I need help.",
+        ("gu", "en", "મને મદદ જોઈએ."): "I need help.",
         ("gu", "en", "મને મદદ કરો."): "Please help me.",
         ("gu", "en", "મને મદદ કરો"): "Please help me.",
         ("gu", "en", "મને પાણી આપો."): "Please give me water.",
@@ -261,7 +269,15 @@ class OfflineIndicTranslationEngine:
         ("gu", "en", "નમસ્તે"): "Hello.",
         ("gu", "en", "ધન્યવાદ"): "Thank you.",
 
+        # Marathi -> Hindi
+        ("mr", "hi", "मला मदत हवी आहे"): "मुझे मदद चाहिए।",
+        ("mr", "hi", "मला मदत हवी आहे."): "मुझे मदद चाहिए।",
+        ("mr", "hi", "मला मदत करा"): "मेरी मदद कीजिए।",
+        ("mr", "hi", "मला मदत करा."): "मेरी मदद कीजिए।",
+
         # Marathi -> English
+        ("mr", "en", "मला मदत हवी आहे"): "I need help.",
+        ("mr", "en", "मला मदत हवी आहे."): "I need help.",
         ("mr", "en", "मला मदत करा."): "Please help me.",
         ("mr", "en", "मला मदत करा"): "Please help me.",
         ("mr", "en", "कृपया येथे त्वरित वैद्यकीय मदत पाठवा, परिस्थिती गंभीर आहे."): "Please send medical help here immediately, the situation is critical.",
@@ -560,8 +576,15 @@ class OfflineIndicTranslationEngine:
         "thank": {"hi": "धन्यवाद", "gu": "આભાર", "mr": "धन्यवाद", "ta": "நன்றி", "te": "ధన్యవాదాలు", "kn": "ಧನ್ಯವಾದಗಳು", "ml": "നന്ദി", "bn": "ধন্যবাদ", "or": "ଧନ୍ୟବାଦ"},
         "you": {"hi": "आप", "gu": "તમે", "mr": "तुम्ही", "ta": "நீங்கள்", "te": "మీరు", "kn": "ನೀವು", "ml": "നിങ്ങൾ", "bn": "আপনি", "or": "ଆପଣ"},
         "i": {"hi": "मैं", "gu": "હું", "mr": "मी", "ta": "நான்", "te": "నేను", "kn": "ನಾನು", "ml": "ഞാൻ", "bn": "আমি", "or": "ମୁଁ"},
-        "we": {"hi": "हम", "gu": "અમે", "mr": "આम्ही", "ta": "நாங்கள்", "te": "మేము", "kn": "ನಾವು", "ml": "ഞങ്ങൾ", "bn": "আমরা", "or": "ଆମେ"},
+        "me": {"hi": "मुझे", "gu": "મને", "mr": "मला", "ta": "எனக்கு", "te": "నాకు", "kn": "ನನಗೆ", "ml": "എനിക്ക്", "bn": "আমাকে", "or": "ମୋତେ"},
+        "my": {"hi": "मेरी", "gu": "મારી", "mr": "माझी", "ta": "என்", "te": "నా", "kn": "ನನ್ನ", "ml": "എന്റെ", "bn": "আমার", "or": "ମୋର"},
+        "we": {"hi": "हम", "gu": "અમે", "mr": "आम्ही", "ta": "நாங்கள்", "te": "మేము", "kn": "ನಾವು", "ml": "ഞങ്ങൾ", "bn": "আমরা", "or": "ଆମେ"},
         "need": {"hi": "चाहिए", "gu": "જરૂર છે", "mr": "हवे आहे", "ta": "தேவை", "te": "కావాలి", "kn": "ಬೇಕು", "ml": "ആവശ്യമാണ്", "bn": "প্রয়োজন", "or": "ଦରକାର"},
+        "is": {"hi": "है", "gu": "છે", "mr": "आहे", "ta": "உள்ளது", "te": "ఉంది", "kn": "ಇದೆ", "ml": "ആണ്", "bn": "হয়", "or": "ଅଟେ"},
+        "are": {"hi": "हैं", "gu": "છે", "mr": "आहेत", "ta": "உள்ளனர்", "te": "ఉన్నారు", "kn": "ಇದ್ದಾರೆ", "ml": "ആണ്", "bn": "আছেন", "or": "ଅଛନ୍ତି"},
+        "here": {"hi": "यहाँ", "gu": "અહીં", "mr": "येथे", "ta": "இங்கே", "te": "ఇక్కడ", "kn": "ಇಲ್ಲಿ", "ml": "ഇവിടെ", "bn": "এখানে", "or": "ଏଠାରେ"},
+        "send": {"hi": "भेजिए", "gu": "મોકલો", "mr": "पाठवा", "ta": "அனுப்புங்கள்", "te": "పంపండి", "kn": "ಕಳುಹಿಸಿ", "ml": "അയക്കൂ", "bn": "পাঠান", "or": "ପଠାନ୍ତୁ"},
+        "give": {"hi": "दीजिए", "gu": "આપો", "mr": "द्या", "ta": "கொடுங்கள்", "te": "ఇవ్వండి", "kn": "ಕೊಡಿ", "ml": "തരൂ", "bn": "দিন", "or": "ଦିଅନ୍ତୁ"},
     }
 
     @classmethod
@@ -574,8 +597,15 @@ class OfflineIndicTranslationEngine:
         if not clean_text:
             return ""
 
+        src_l = source_lang.lower()
+        tgt_l = target_lang.lower()
+
+        # Rule 1: Same-Language Bypass (0ms, zero corruption)
+        if src_l == tgt_l:
+            return clean_text
+
         # 1. Exact phrase lookup
-        key = (source_lang, target_lang, clean_text)
+        key = (src_l, tgt_l, clean_text)
         if key in cls.PHRASES:
             return cls.PHRASES[key]
 
