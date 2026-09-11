@@ -95,9 +95,6 @@ WAKE_PHRASES = [
     "hey i tantra",
     "i tantra",
     "itantra",
-    "hey siri",
-    "alexa",
-    "hello world",
     "start itantra",
     "हे आईटन्ट्रा",
     "हे आईतंत्रा",
@@ -110,6 +107,5 @@ WAKE_PHRASES = [
     "ए आई टेंट्रा",
     "ए आई",
     "hey i",
-    "hey",
 ]
 
