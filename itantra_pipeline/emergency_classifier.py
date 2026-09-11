@@ -90,19 +90,33 @@ class EmergencyClassifier:
         matched_location = []
         matched_numbers = []
 
-        # Check emergency terms (substring & token match)
+        # Extract individual tokens (including Devanagari and Latin script words)
+        tokens = set(re.findall(r"[\w\u0900-\u097F]+", normalized_text))
+
+        def matches_term(term: str) -> bool:
+            if not term:
+                return False
+            if " " in term:
+                # Multi-word phrase: match with boundary/whitespace
+                pattern = r"(?:\b|\s|^)" + re.escape(term) + r"(?:\b|\s|$|[।,?!])"
+                return bool(re.search(pattern, normalized_text))
+            else:
+                # Single word: match exact token (prevents 'आग' matching inside 'आगरा')
+                return term in tokens or term in normalized_text.split()
+
+        # Check emergency terms
         for term in self.emergency_terms:
-            if term in normalized_text:
+            if matches_term(term):
                 matched_emergency.append(term)
 
         # Check location terms
         for term in self.location_terms:
-            if term in normalized_text:
+            if matches_term(term):
                 matched_location.append(term)
 
         # Check numbers
         for term in self.numbers:
-            if term in normalized_text:
+            if matches_term(term):
                 matched_numbers.append(term)
 
         all_matched = list(dict.fromkeys(matched_emergency + matched_location + matched_numbers))

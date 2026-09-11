@@ -75,3 +75,41 @@ LANGUAGE_NAMES = {
 DEFAULT_LANGUAGE = "hi"
 PRIORITY_EMERGENCY = "P0"
 PRIORITY_NORMAL = "P2"
+
+# -----------------------------------------------------------------------------
+# MODULE 4: Wake-Word / Voice-Trigger Hyperparameters (sherpa-onnx KWS)
+# -----------------------------------------------------------------------------
+KWS_MODEL_DIR = MODELS_DIR / "kws" / "sherpa-onnx-kws-zipformer-gigaspeech-3.3M-2024-01-01"
+WAKE_WORD_KEYWORDS_PATH = KEYWORDS_DIR / "kws_keywords.txt"
+
+WAKE_WORD_THRESHOLD = 0.10       # KWS trigger probability threshold (0.0 to 1.0)
+WAKE_WORD_SCORE = 2.0           # Boosting score of keyword tokens in beam search
+WAKE_WORD_COOLDOWN_MS = 1500     # Debounce period (ms) to prevent duplicate triggering
+WAKE_WORD_PRE_ROLL_MS = 500      # Ring buffer lookback (ms) preserved on wake trigger
+COMMAND_TIMEOUT_MS = 5000        # Max audio duration (ms) for command speech capture
+COMMAND_SILENCE_TIMEOUT_MS = 1200 # Silence duration after speech to end command capture
+
+# Known wake phrases and phonetic transcripts for command prefix stripping
+WAKE_PHRASES = [
+    "hey itantra",
+    "hey i tantra",
+    "i tantra",
+    "itantra",
+    "hey siri",
+    "alexa",
+    "hello world",
+    "start itantra",
+    "हे आईटन्ट्रा",
+    "हे आईतंत्रा",
+    "आईटन्ट्रा",
+    "आईतंत्रा",
+    "ए आई टैन ट्र",
+    "ए आईटैन्ट्रा",
+    "ए आई टंट्रा",
+    "ए आईटन्ट्रा",
+    "ए आई टेंट्रा",
+    "ए आई",
+    "hey i",
+    "hey",
+]
+

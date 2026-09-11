@@ -11,10 +11,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-from pipeline import VoicePipeline
+from pipeline import VoicePipeline, StreamPipelineEventType
+
 
 def test_voice_pipeline():
-    print("--- Running Test: VoicePipeline ---")
+    print("--- Running Test: VoicePipeline (Batch & Streaming) ---")
     pipeline = VoicePipeline()
 
     sr = 16000
@@ -26,6 +27,7 @@ def test_voice_pipeline():
 
     audio = np.concatenate([silence1, tone, silence2])
 
+    # 1. Test batch wrapper
     result = pipeline.process_audio((sr, audio), language_code="hi")
 
     print("Pipeline Execution Result Keys:", list(result.keys()))
@@ -33,6 +35,7 @@ def test_voice_pipeline():
     print(f"STT Latency: {result['stt_latency_ms']} ms")
     print(f"Classifier Latency: {result['classifier_latency_ms']} ms")
     print(f"Total Latency: {result['total_latency_ms']} ms")
+    print(f"Avg Chunk Latency: {result.get('avg_chunk_latency_ms', 0)} ms")
     print(f"Final Transcript: '{result['final_transcript']}'")
     print(f"Emergency Flag: {result['emergency_result']}")
 
@@ -40,7 +43,25 @@ def test_voice_pipeline():
     assert "vad_segments" in result
     assert "emergency_result" in result
 
+    # 2. Test direct streaming generator
+    frame_size = 512
+    def audio_gen():
+        for i in range(0, len(audio), frame_size):
+            yield audio[i : i + frame_size]
+
+    stream = pipeline.process_stream(audio_gen(), language_code="hi")
+    events_count = 0
+    try:
+        while True:
+            ev = next(stream)
+            events_count += 1
+    except StopIteration as e:
+        metrics = e.value
+        print(f"Stream yielded {events_count} events. RTF: {metrics.rtf}x")
+        assert metrics.total_latency_ms > 0
+
     print("--- Test VoicePipeline PASSED ---\n")
+
 
 if __name__ == "__main__":
     test_voice_pipeline()
